@@ -43,7 +43,7 @@
           oc = this.onClick;
           var list_of_rows = this.props.grid.map(function(row, y){
             var row_of_cells = row.map(function(alive, x) {
-              return <Cell alive={alive} x={x} y={y} onClick={oc(x, y)}/>;
+              return <Cell alive={alive} x={x} y={y} key={""+y+","+x} onClick={oc(x, y)}/>;
             });
             return <tr>{row_of_cells}</tr>
           })
