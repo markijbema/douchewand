@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv='Content-type' content='text/html; charset=utf-8'>
+    <title>Conways Game of Life</title>
+    <style>
+      .cell {width: 10px;height: 10px;}
+      .alive {background-color: green;}
+      .dead {background-color: red;}
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+    <script src="http://fb.me/react-0.8.0.js"></script>
+    <script src="http://fb.me/JSXTransformer-0.8.0.js"></script>
+    <script type="text/jsx">
+      /**
+       * @jsx React.DOM
+       */
+      var Cell = React.createClass({
+        onClick: function() {
+          this.props.onClick();
+        },
+
+        render: function() {
+          if (this.props.alive) {
+            return <td className="alive cell" onClick={this.onClick} />;
+          } else {
+            return <td className="dead cell" onClick={this.onClick} />;
+          }
+        }
+      });
+
+      var Grid = React.createClass({
+        onClick: function(x,y) {
+          self = this;
+          return function(){
+            self.props.onClick(x, y)
+          }
+        },
+
+        render: function() {
+          oc = this.onClick;
+          var list_of_rows = this.props.grid.map(function(row, y){
+            var row_of_cells = row.map(function(alive, x) {
+              return <Cell alive={alive} x={x} y={y} onClick={oc(x, y)}/>;
+            });
+            return <tr>{row_of_cells}</tr>
+          })
+
+          return <table>{list_of_rows}</table>;
+        }
+      });
+
+      var invertGridPoint = function(x, y, grid) {
+        return grid.map(function(val, old_y) {
+          if (old_y !== y) {
+           return val;
+         } else {
+           return val.map(function(val, old_x) {
+             if (old_x !== x) {
+               return val;
+             } else {
+                return !val;
+             }
+           });
+         }
+        });
+      };
+
+      var nrOfNeighbours = function(x, y, grid) {
+        var nr = 0;
+
+        neighbours = [
+          (grid[y-1] || []),
+          grid[y],
+          (grid[y+1] || [])
+        ];
+
+        for(var i = 0; i <= 2; i++) {
+          for(var j = x-1; j <= x+1; j++) {
+            if (i != 1 || j != x){
+              if (neighbours[i][j]) {
+                nr++
+              }
+            }
+          }
+        }
+
+        return nr;
+      }
+
+      var advanceGrid = function(grid) {
+        return grid.map(function(cells, y) {
+           return cells.map(function(alive, x) {
+             var nr = nrOfNeighbours(x,y,grid)
+             if (alive)
+               return nr == 2 || nr == 3
+             else
+               return nr == 3;
+           });
+        });
+
+      }
+
+      var GoL = React.createClass({
+         getInitialState: function(){
+           return {
+             grid: [
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             ]
+           };
+         },
+
+         advance: function(){
+           new_grid = advanceGrid(this.state.grid);
+           this.setState({grid: new_grid})
+         },
+
+         onClick: function(x, y){
+           new_grid = invertGridPoint(x,y,this.state.grid);
+           this.setState({grid: new_grid});
+         },
+
+         render: function(){
+          return <div>
+                   <Grid grid={this.state.grid} onClick={this.onClick}/>
+                   <button onClick={this.advance}>Advance</button>
+                 </div>
+        }
+      })
+
+      React.renderComponent(
+        <GoL />,
+        document.getElementById('container')
+      );
+    </script>
+  </body>
+</html>
