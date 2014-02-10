@@ -143,7 +143,7 @@
                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              ],
 
-             tick: 1000,
+             hertz: 1,
 
              pauzed: false
            };
@@ -151,15 +151,15 @@
 
          resetInterval: function(){
            clearInterval(this.interval)
-           this.interval = setInterval(this.advance, this.state.tick)
+           this.interval = setInterval(this.advance, 1000 / this.state.hertz)
          },
 
          componentWillMount: function(){
            this.resetInterval();
          },
 
-         updateTick: function(event){
-          this.setState({tick: event.target.value}, this.resetInterval);
+         updateHertz: function(event){
+          this.setState({hertz: event.target.value}, this.resetInterval);
          },
 
          advance: function(){
@@ -187,7 +187,7 @@
             button = <button onClick={this.pauze}>Pauze</button>
           return <div>
                    <Grid grid={this.state.grid} onClick={this.onClick}/>
-                   <input type="text" defaultValue={this.state.tick} onChange={this.updateTick} />
+                   1 <input type="range" min="1" max="50" defaultValue={this.state.hertz} onChange={this.updateHertz} /> 50
                    {button}
                  </div>
         }
