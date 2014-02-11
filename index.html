@@ -115,7 +115,7 @@
          },
          componentWillReceiveProps: function(nextProps) {
            this.setState({
-             grid: this.props.startingGrid,
+             grid: nextProps.startingGrid,
            });
          },
          resetInterval: function(){
