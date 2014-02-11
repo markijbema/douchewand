@@ -45,7 +45,7 @@
             var row_of_cells = row.map(function(alive, x) {
               return <Cell alive={alive} x={x} y={y} key={""+y+","+x} onClick={oc(x, y)}/>;
             });
-            return <tr>{row_of_cells}</tr>
+            return <tr key={y}>{row_of_cells}</tr>
           })
 
           return <table><tbody>{list_of_rows}</tbody></table>;
@@ -222,8 +222,8 @@
         render: function(){
           return <div>
                   <ul>
-                    <li><a onClick={this.chooseSmall}>small</a></li>
-                    <li><a onClick={this.chooseLarge}>large</a></li>
+                    <li><a href="javascript:" onClick={this.chooseSmall}>small</a></li>
+                    <li><a href="javascript:" onClick={this.chooseLarge}>large</a></li>
                   </ul>
                   <GoL startingGrid={this.state.grid} />
                  </div>
