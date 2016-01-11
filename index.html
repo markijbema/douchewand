@@ -16,8 +16,8 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
       /**
        * @jsx React.DOM
        */
-      var gridColors = ["#fff", "#000", "#ccc", "#99f"];
-      var weights = [10, 2, 10, 10];
+      var gridColors = ["#fff", "#6cf", "#000", "#ddd", "#00a"];
+      var weights = [3, 3, 10, 10, 10];
       var weightSum = weights.reduce(function(prev, curr) { return prev + curr; })
       var weightedColors=[];
       var currentColor=0;
@@ -106,8 +106,14 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
       for(var y = 0; y < hoogte; y++) {
         small[y] = []
         for(var x = 0; x < breedte; x++){
-          var rnd = getRandomInt(weightSum);
-          small[y][x] = weightedColors[rnd]
+          small[y][x] = (x+y)%2
+        }
+      }
+      for(var y = 0; y < hoogte; y++) {
+        for(var x = 0; x < breedte; x++){
+          var rnd = getRandomInt(weightSum * 6);
+          if (rnd < weightSum )
+            small[y][x] = weightedColors[rnd]
         }
       }
 
