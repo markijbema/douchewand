@@ -69,85 +69,17 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
         });
       };
 
-      var nrOfNeighbours = function(x, y, grid) {
-        var nr = 0;
 
-        neighbours = [
-          (grid[y-1] || []),
-          grid[y],
-          (grid[y+1] || [])
-        ];
-
-        for(var i = 0; i <= 2; i++) {
-          for(var j = x-1; j <= x+1; j++) {
-            if (i != 1 || j != x){
-              if (neighbours[i][j]) {
-                nr++
-              }
-            }
-          }
-        }
-
-        return nr;
-      }
-
-      var advanceGrid = function(grid) {
-        return grid.map(function(cells, y) {
-           return cells.map(function(alive, x) {
-             var nr = nrOfNeighbours(x,y,grid)
-             if (alive)
-               return nr == 2 || nr == 3
-             else
-               return nr == 3;
-           });
-        });
-
-      }
-
-      var GoL = React.createClass({
+      var ClickableGrid = React.createClass({
          getInitialState: function(){
            return {
              grid: this.props.startingGrid,
-
-             hertz: 1,
-
-             pauzed: true
            };
          },
-         componentWillReceiveProps: function(nextProps) {
-           this.setState({
-             grid: nextProps.startingGrid,
-           });
-         },
-         resetInterval: function(){
-           clearInterval(this.interval)
-           this.interval = setInterval(this.advance, 1000 / this.state.hertz)
-         },
-
-         componentWillMount: function(){
-           this.resetInterval();
-         },
-
-         updateHertz: function(event){
-          this.setState({hertz: event.target.value}, this.resetInterval);
-         },
-
-         advance: function(){
-           if (this.state.pauzed) return
-
-           new_grid = advanceGrid(this.state.grid);
-           this.setState({grid: new_grid})
-         },
-
+                  
          onClick: function(x, y){
            new_grid = invertGridPoint(x,y,this.state.grid);
            this.setState({grid: new_grid});
-         },
-
-         pauze: function(){
-           this.setState({
-            pauzed:  ! this.state.pauzed
-           });
          },
 
          render: function(){
@@ -164,21 +96,8 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
         [0, 0, 0, 0]
       ]
 
-      Game = React.createClass({
-        getInitialState: function(){
-          return {
-            grid: small
-          }
-        },
-        render: function(){
-          return <div>
-                  <GoL startingGrid={this.state.grid} />
-                 </div>
-        }
-      });
-
       React.renderComponent(
-        <Game />,
+        <ClickableGrid startingGrid={small} />,
         document.getElementById('container')
       );
     </script>
