@@ -5,8 +5,6 @@
     <title>Conways Game of Life</title>
     <style>
       .cell {width: 10px;height: 10px;}
-      .alive {background-color: green;}
-      .dead {background-color: red;}
     </style>
   </head>
   <body>
@@ -18,17 +16,15 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
       /**
        * @jsx React.DOM
        */
+      var gridColors = ["red", "green", "blue"];
+
       var Cell = React.createClass({
         onClick: function() {
           this.props.onClick();
         },
 
         render: function() {
-          if (this.props.alive) {
-            return <td className="alive cell" onClick={this.onClick} />;
-          } else {
-            return <td className="dead cell" onClick={this.onClick} />;
-          }
+            return <td className="cell" onClick={this.onClick} style={{'background-color': gridColors[this.props.alive]}} />;
         }
       });
 
@@ -62,7 +58,7 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
              if (old_x !== x) {
                return val;
              } else {
-                return !val;
+                return (val + 1) % gridColors.length;
              }
            });
          }
