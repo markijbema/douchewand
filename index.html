@@ -16,8 +16,8 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
       /**
        * @jsx React.DOM
        */
-      var gridColors = ["#fff", "#6cf", "#000", "#ddd", "#00a"];
-      var weights = [3, 3, 10, 10, 10];
+      var gridColors = ["#fff", "#6cf", "#00a", "#000", "#ddd", ];
+      var weights = [3, 3, 10, 3, 10];
       var weightSum = weights.reduce(function(prev, curr) { return prev + curr; })
       var weightedColors=[];
       var currentColor=0;
@@ -27,6 +27,19 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
               weightedColors[weightedColors.length]=currentColor;
           currentColor++;
       }
+
+      //donker links
+      var weights2 = [5, 10, 3, 3, 10];
+      var weightSum2 = weights2.reduce(function(prev, curr) { return prev + curr; })
+      var weightedColors2=[];
+      var currentColor2=0;
+       
+      while (currentColor2<weights2.length){
+          for (var i=0; i<weights2[currentColor2]; i++)
+              weightedColors2[weightedColors2.length]=currentColor2;
+          currentColor2++;
+      }
+
 
       var Cell = React.createClass({
         onClick: function() {
@@ -103,17 +116,29 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
 
       var breedte = 50;
       var hoogte = 18;
+      var randlicht = 25;
       for(var y = 0; y < hoogte; y++) {
         small[y] = []
         for(var x = 0; x < breedte; x++){
-          small[y][x] = (x+y)%2
+          if(x > randlicht) {
+            small[y][x] = (x+y)%2;
+          } else {
+            small[y][x] = (x+y)%2 + 1;
+          }
         }
       }
       for(var y = 0; y < hoogte; y++) {
         for(var x = 0; x < breedte; x++){
-          var rnd = getRandomInt(weightSum * 6);
-          if (rnd < weightSum )
-            small[y][x] = weightedColors[rnd]
+          if( x > randlicht ){
+            var rnd = getRandomInt(weightSum * 2.4);
+            if (rnd < weightSum )
+              small[y][x] = weightedColors[rnd]
+          } else {
+            var rnd = getRandomInt(weightSum2 * 2.4);
+              if (rnd < weightSum2 )
+                small[y][x] = weightedColors2[rnd]; //weightedColors2[rnd]
+              
+          }
         }
       }
 
