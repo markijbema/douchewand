@@ -4,7 +4,7 @@
     <meta http-equiv='Content-type' content='text/html; charset=utf-8'>
     <title>Conways Game of Life</title>
     <style>
-      .cell {width: 10px;height: 10px;}
+      .cell {width: 15px;height: 15px;}
     </style>
   </head>
   <body>
@@ -16,7 +16,17 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
       /**
        * @jsx React.DOM
        */
-      var gridColors = ["red", "green", "blue"];
+      var gridColors = ["#fff", "#000", "#ccc", "#99f"];
+      var weights = [10, 2, 10, 10];
+      var weightSum = weights.reduce(function(prev, curr) { return prev + curr; })
+      var weightedColors=[];
+      var currentColor=0;
+       
+      while (currentColor<weights.length){
+          for (var i=0; i<weights[currentColor]; i++)
+              weightedColors[weightedColors.length]=currentColor;
+          currentColor++;
+      }
 
       var Cell = React.createClass({
         onClick: function() {
@@ -81,16 +91,25 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
          render: function(){
            return <div>
                    <Grid grid={this.state.grid} onClick={this.onClick}/>
-                 </div>
-        }
-      })
+                   </div>
+          }
+        })
 
-      small = [
-        [0, 0, 1, 0],
-        [0, 0, 1, 0],
-        [0, 0, 1, 0],
-        [0, 0, 0, 0]
-      ]
+      function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+      }
+
+      small = [];
+
+      var breedte = 50;
+      var hoogte = 18;
+      for(var y = 0; y < hoogte; y++) {
+        small[y] = []
+        for(var x = 0; x < breedte; x++){
+          var rnd = getRandomInt(weightSum);
+          small[y][x] = weightedColors[rnd]
+        }
+      }
 
       React.renderComponent(
         <ClickableGrid startingGrid={small} />,
