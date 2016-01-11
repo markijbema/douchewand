@@ -16,30 +16,72 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
       /**
        * @jsx React.DOM
        */
-      var gridColors = ["#fff", "#6cf", "#00a", "#000", "#ddd", ];
-      var weights = [3, 3, 10, 3, 10];
-      var weightSum = weights.reduce(function(prev, curr) { return prev + curr; })
-      var weightedColors=[];
-      var currentColor=0;
-       
-      while (currentColor<weights.length){
-          for (var i=0; i<weights[currentColor]; i++)
-              weightedColors[weightedColors.length]=currentColor;
-          currentColor++;
+
+      function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
       }
 
-      //donker links
-      var weights2 = [5, 10, 3, 3, 10];
-      var weightSum2 = weights2.reduce(function(prev, curr) { return prev + curr; })
-      var weightedColors2=[];
-      var currentColor2=0;
-       
-      while (currentColor2<weights2.length){
-          for (var i=0; i<weights2[currentColor2]; i++)
-              weightedColors2[weightedColors2.length]=currentColor2;
-          currentColor2++;
+      function randomFrom(weights) {
+        var weightSum = weights.reduce(function(prev, curr) { return prev + curr; })
+        var weightedColors=[];
+        var currentColor=0;
+         
+        while (currentColor<weights.length){
+            for (var i=0; i<weights[currentColor]; i++)
+                weightedColors[weightedColors.length]=currentColor;
+            currentColor++;
+        }
+
+        return weightedColors[getRandomInt(weightSum)];
       }
 
+      var kleurnamen = ["wit", "lichtblauw", "blauw", "zwart", "grijs"];
+      var gridColors = ["#fff", "#6cf", "#00a", "#000", "#ddd"];
+      var breedte = 60;
+      var hoogte = 18;
+      
+      function gebied(x) {
+          if (x < 15) {
+            return {
+              stripes: [1, 2],
+              weights: [5, 1, 5, 8, 10],
+              rnd: 0.3
+            }
+          } else if (x < 30) {
+            return {
+              stripes: [4, 2],
+              weights: [8, 20, 3, 8, 3],
+              rnd: 0.4  
+            }
+          } else if (x < 45) {
+            return {
+              stripes: [4, 1],
+              weights: [8, 1, 8, 8, 1],
+              rnd: 0.4
+            }
+          } else {
+            return {
+              stripes: [0,1],
+              weights:  [1, 1, 20, 2, 20],
+              rnd: 0.4
+            }
+          }        
+      } 
+      
+      douchewand = [];
+      for(var y = 0; y < hoogte; y++) {
+        douchewand[y] = []
+        for(var x = 0; x < breedte; x++){
+          douchewand[y][x] = gebied(x).stripes[(x+y)%2];
+        }
+      }
+      for(var y = 0; y < hoogte; y++) {
+        for(var x = 0; x < breedte; x++){
+          if(Math.random() < gebied(x).rnd){
+            douchewand[y][x] = randomFrom(gebied(x).weights);
+          }
+        }
+      }
 
       var Cell = React.createClass({
         onClick: function() {
@@ -88,6 +130,22 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
         });
       };
 
+      var StenenTeller = React.createClass({
+       
+        render: function() {
+          var counts = kleurnamen.map(function(){return 0;});
+
+          var grid = this.props.grid;
+          for (var y = 0; y < grid.length; y++)
+            for (var x = 0; x < grid[y].length; x++)
+              counts[grid[y][x]]++;
+           var list_of_rows = kleurnamen.map(function(naam, i) {
+              return <tr><td>{naam}</td><td>{counts[i]}</td></tr>;
+            });
+         
+          return <table><tbody><tr><th>kleur</th><th>aantal</th></tr>{list_of_rows}</tbody></table>;
+        }
+      });
 
       var ClickableGrid = React.createClass({
          getInitialState: function(){
@@ -104,46 +162,17 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
          render: function(){
            return <div>
                    <Grid grid={this.state.grid} onClick={this.onClick}/>
+                   <br/><br/><br/>
+                   <StenenTeller grid={this.state.grid} />
                    </div>
           }
         })
 
-      function getRandomInt(max) {
-        return Math.floor(Math.random() * max);
-      }
+      
 
-      small = [];
-
-      var breedte = 50;
-      var hoogte = 18;
-      var randlicht = 25;
-      for(var y = 0; y < hoogte; y++) {
-        small[y] = []
-        for(var x = 0; x < breedte; x++){
-          if(x > randlicht) {
-            small[y][x] = (x+y)%2;
-          } else {
-            small[y][x] = (x+y)%2 + 1;
-          }
-        }
-      }
-      for(var y = 0; y < hoogte; y++) {
-        for(var x = 0; x < breedte; x++){
-          if( x > randlicht ){
-            var rnd = getRandomInt(weightSum * 2.4);
-            if (rnd < weightSum )
-              small[y][x] = weightedColors[rnd]
-          } else {
-            var rnd = getRandomInt(weightSum2 * 2.4);
-              if (rnd < weightSum2 )
-                small[y][x] = weightedColors2[rnd]; //weightedColors2[rnd]
-              
-          }
-        }
-      }
 
       React.renderComponent(
-        <ClickableGrid startingGrid={small} />,
+        <ClickableGrid startingGrid={douchewand} />,
         document.getElementById('container')
       );
     </script>
