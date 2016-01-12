@@ -21,67 +21,34 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
         return Math.floor(Math.random() * max);
       }
 
-      function randomFrom(weights) {
-        var weightSum = weights.reduce(function(prev, curr) { return prev + curr; })
-        var weightedColors=[];
-        var currentColor=0;
-         
-        while (currentColor<weights.length){
-            for (var i=0; i<weights[currentColor]; i++)
-                weightedColors[weightedColors.length]=currentColor;
-            currentColor++;
-        }
-
-        return weightedColors[getRandomInt(weightSum)];
-      }
-
       var kleurnamen = ["wit", "lichtblauw", "blauw", "zwart", "grijs"];
       var gridColors = ["#fff", "#6cf", "#00a", "#000", "#ddd"];
+      var numColors = gridColors.length;
       var breedte = 60;
       var hoogte = 18;
       
-      function gebied(x) {
-          if (x < 15) {
-            return {
-              stripes: [1, 2],
-              weights: [5, 1, 5, 8, 10],
-              rnd: 0.3
-            }
-          } else if (x < 30) {
-            return {
-              stripes: [4, 2],
-              weights: [8, 20, 3, 8, 3],
-              rnd: 0.4  
-            }
-          } else if (x < 45) {
-            return {
-              stripes: [4, 1],
-              weights: [8, 1, 8, 8, 1],
-              rnd: 0.4
-            }
-          } else {
-            return {
-              stripes: [0,1],
-              weights:  [1, 1, 20, 2, 20],
-              rnd: 0.4
-            }
-          }        
-      } 
-      
       douchewand = [];
+      function get(x, y) { return douchewand[y] ? douchewand[y][x] : undefined; }
+
       for(var y = 0; y < hoogte; y++) {
         douchewand[y] = []
         for(var x = 0; x < breedte; x++){
-          douchewand[y][x] = gebied(x).stripes[(x+y)%2];
+          douchewand[y][x] = getRandomInt(numColors);
         }
       }
-      for(var y = 0; y < hoogte; y++) {
-        for(var x = 0; x < breedte; x++){
-          if(Math.random() < gebied(x).rnd){
-            douchewand[y][x] = randomFrom(gebied(x).weights);
+
+      do {
+        var changed = false
+        for(var y = 0; y < hoogte; y++) {
+          for(var x = 0; x < breedte; x++){
+            var color = get(x, y);
+            if(get(x-1, y) == color || get(x+1, y) == color || get(x, y-1) == color || get(x, y+1) == color) {
+              douchewand[y][x] = getRandomInt(numColors);
+              changed = true;
+            }
           }
         }
-      }
+      } while (changed);
 
       var Cell = React.createClass({
         onClick: function() {
