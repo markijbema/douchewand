@@ -39,7 +39,7 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
 
       function tiltedRamp(tilt) {
         return function(x, y) {
-          return 0.5 + 0.5 * tilt * (x - halfWidth) / halfWidth;
+          return 1 + tilt * (x - halfWidth) / halfWidth;
         };
       }
 
