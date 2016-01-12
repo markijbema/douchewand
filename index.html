@@ -37,20 +37,20 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
         throw new Error("impossible is nothing");
       }
 
-      function tiltedRamp(tilt) {
+      function tiltedRamp(multiplier, tilt) {
         return function(x, y) {
-          return 1 + tilt * (x - halfWidth) / halfWidth;
+          return multiplier * (1 + tilt * (x - halfWidth) / halfWidth);
         };
       }
 
       var kleurnamen = ["wit", "grijs", "lichtblauw", "blauw", "zwart"];
       var gridColors = ["#fff", "#ddd", "#6cf", "#00a", "#000"];
       var colorWeights = [
-        tiltedRamp(1),
-        tiltedRamp(0.5),
-        tiltedRamp(0),
-        tiltedRamp(-0.5),
-        tiltedRamp(-1),
+        tiltedRamp(1.5, 1.5),
+        tiltedRamp(2.5, 0.75),
+        tiltedRamp(3.0, 0),
+        tiltedRamp(3.0, -0.75),
+        tiltedRamp(0.3, -1.5),
       ];
       var numColors = gridColors.length;
       var breedte = 60;
