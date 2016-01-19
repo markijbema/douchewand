@@ -37,24 +37,43 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
         throw new Error("impossible is nothing");
       }
 
+      function afstandTotAchtermuurMax18(x) {
+        return Math.min(
+            Math.abs(x-(18+6)),
+            Math.abs(x-(18+12-6)),
+            18+6
+        );
+      }
+
       function tiltedRamp(multiplier, tilt) {
         return function(x, y) {
-          return multiplier * (1 + tilt * (x - halfWidth) / halfWidth);
+          if (false &&  x > 18 &&  x <= 18 + 12 ) {
+            return multiplier - tilt;
+          } else {
+            return multiplier * (1 -tilt + 2 * tilt * afstandTotAchtermuurMax18(x) / (18+6));
+          }
         };
       }
 
-      var kleurnamen = ["wit", "grijs", "lichtblauw", "blauw", "zwart"];
+      var kleurnamen = [
+        "wit",
+        "grijs",
+        "lichtblauw",
+        "blauw",
+        "zwart"
+        ];
       var gridColors = ["#fff", "#ddd", "#6cf", "#00a", "#000"];
       var colorWeights = [
-        tiltedRamp(1.5, 1.5),
-        tiltedRamp(2.5, 0.75),
+        tiltedRamp(1.5, 1.3),
+        tiltedRamp(2.7, 0.75),
         tiltedRamp(3.0, 0),
         tiltedRamp(3.0, -0.75),
-        tiltedRamp(0.3, -1.5),
+        tiltedRamp(0.3, -0.29),
       ];
       var numColors = gridColors.length;
-      var breedte = 60;
-      var hoogte = 18;
+      var breedte = 18+12+24+2;
+
+      var hoogte = 25;
       var halfWidth = (breedte - 1) / 2;
       
       douchewand = [];
@@ -67,15 +86,21 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
         }
       }
 
-      var numIterations = 5;
+      var numIterations = 100000;
       for (var i = 0; i < numIterations; i++) {
+        var errors = 0;
         for(var y = 0; y < hoogte; y++) {
           for(var x = 0; x < breedte; x++){
             var color = get(x, y);
             if(get(x-1, y) == color || get(x+1, y) == color || get(x, y-1) == color || get(x, y+1) == color) {
               douchewand[y][x] = getRandomColor(x, y);
+              ++errors;
             }
           }
+        }
+        console.info(errors)
+        if (errors < 50){
+          break;
         }
       }
 
