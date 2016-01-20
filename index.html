@@ -47,7 +47,7 @@
         return Math.max(0, Math.min(
             Math.abs(x-leftWall),
             Math.abs(x-rightWall),
-            26
+            24
         ));
       }
 
@@ -56,7 +56,7 @@
           if (false && x > leftWall &&  x <= rightWall) {
             return multiplier * ( 1-  tilt);
           } else {
-            return multiplier * (1 - tilt + 2 * tilt * afstandTotAchtermuurMax18(x) / (26));
+            return multiplier * (1 - tilt + 2 * tilt * afstandTotAchtermuurMax18(x) / (24));
           }
         };
       }
@@ -84,11 +84,11 @@
         tiltedRamp(5, -5),
        ]
       var colorWeightsMark2 = [
-        tiltedRamp(15.0, 0.98),
+        tiltedRamp(25.0, 0.98),
         tiltedRamp(25.0, 0.93),
         tiltedRamp(30.0, 0),
-        tiltedRamp(35.0, -1.1),
-        tiltedRamp(5.0, -1.2),
+        tiltedRamp(38.0, -1.02),
+        tiltedRamp(3.0, -1.0),
       ];
 
       var colorWeightsThomas = [
