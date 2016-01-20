@@ -4,14 +4,17 @@
     <meta http-equiv='Content-type' content='text/html; charset=utf-8'>
     <title>Conways Game of Life</title>
     <style>
-      .cell {width: 15px;height: 15px;}
+      .cell {width: 15px;height: 15px; border: 0 solid white; border-width: 1px 2px 2px 1px;}
+      table { 
+    border-spacing: 0px;
+    border-collapse: collapse;
+}
     </style>
   </head>
   <body>
     <div id="container"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/react.js"></script>
-    <script src="
-https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
+    <script src="react.js"></script>
+    <script src="JSXTransformer.js"></script>
     <script type="text/jsx">
       /**
        * @jsx React.DOM
@@ -39,8 +42,8 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
 
       function afstandTotAchtermuurMax18(x) {
         return Math.min(
-            Math.abs(x-(18+6)),
-            Math.abs(x-(18+12-6)),
+            Math.abs(x-(18+6-1)),
+            Math.abs(x-(18+12-6-1)),
             18+6
         );
       }
@@ -50,7 +53,7 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
           if (false &&  x > 18 &&  x <= 18 + 12 ) {
             return multiplier - tilt;
           } else {
-            return multiplier * (1 -tilt + 2 * tilt * afstandTotAchtermuurMax18(x) / (18+6));
+            return multiplier * (1 - tilt + 2 * tilt * afstandTotAchtermuurMax18(x) / (18+6));
           }
         };
       }
@@ -64,17 +67,16 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
         ];
       var gridColors = ["#fff", "#ddd", "#6cf", "#00a", "#000"];
       var colorWeights = [
-        tiltedRamp(1.5, 1.3),
+        tiltedRamp(2.5, 1.2),
         tiltedRamp(2.7, 0.75),
-        tiltedRamp(3.0, 0),
-        tiltedRamp(3.0, -0.75),
-        tiltedRamp(0.3, -0.29),
+        tiltedRamp(3.0, 0.3),
+        tiltedRamp(3.0, -0.9),
+        tiltedRamp(0.2, -0.19),
       ];
       var numColors = gridColors.length;
       var breedte = 18+12+24+2;
 
       var hoogte = 25;
-      var halfWidth = (breedte - 1) / 2;
       
       douchewand = [];
       function get(x, y) { return douchewand[y] ? douchewand[y][x] : undefined; }
@@ -110,7 +112,12 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
         },
 
         render: function() {
-            return <td className="cell" onClick={this.onClick} style={{'background-color': gridColors[this.props.alive]}} />;
+            return <td className="cell" onClick={this.onClick} style={
+              {
+                'background-color': gridColors[this.props.alive],
+                'border-right': (this.props.vertlines.includes(this.props.x+1) ? 'solid red 2px' : 'solid white 2px')
+              }
+            } />;
         }
       });
 
@@ -123,10 +130,11 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
         },
 
         render: function() {
+          var self = this;
           oc = this.onClick;
           var list_of_rows = this.props.grid.map(function(row, y){
             var row_of_cells = row.map(function(alive, x) {
-              return <Cell alive={alive} x={x} y={y} key={""+y+","+x} onClick={oc(x, y)}/>;
+              return <Cell alive={alive} x={x} y={y} key={""+y+","+x} vertlines={self.props.vertlines} horlines={self.props.horlines} onClick={oc(x, y)}/>;
             });
             return <tr key={y}>{row_of_cells}</tr>
           })
@@ -182,7 +190,7 @@ https://cdnjs.cloudflare.com/ajax/libs/react/0.8.0/JSXTransformer.js"></script>
 
          render: function(){
            return <div>
-                   <Grid grid={this.state.grid} onClick={this.onClick}/>
+                   <Grid grid={this.state.grid} vertlines={[18, 18+12, 18+12+24]} onClick={this.onClick}/>
                    <br/><br/><br/>
                    <StenenTeller grid={this.state.grid} />
                    <pre>{JSON.stringify(this.state.grid)}</pre>
