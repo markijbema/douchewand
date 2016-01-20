@@ -42,15 +42,15 @@
 
       function afstandTotAchtermuurMax18(x) {
         return Math.min(
-            Math.abs(x-(18+6-1)),
-            Math.abs(x-(18+12-6-1)),
+            Math.abs(x-(18+3-1)),
+            Math.abs(x-(18+12-3-1)),
             18+6
         );
       }
 
       function tiltedRamp(multiplier, tilt) {
         return function(x, y) {
-          if (false &&  x > 18 &&  x <= 18 + 12 ) {
+          if (x > 18 + 3 - 1 &&  x <= 18 + 12 -3 - 1) {
             return multiplier - tilt;
           } else {
             return multiplier * (1 - tilt + 2 * tilt * afstandTotAchtermuurMax18(x) / (18+6));
@@ -66,13 +66,21 @@
         "zwart"
         ];
       var gridColors = ["#fff", "#ddd", "#6cf", "#00a", "#000"];
-      var colorWeights = [
-        tiltedRamp(2.5, 1.2),
-        tiltedRamp(2.7, 0.75),
-        tiltedRamp(3.0, 0.3),
-        tiltedRamp(3.0, -0.9),
-        tiltedRamp(0.2, -0.19),
+      var colorWeightsMark = [
+        tiltedRamp(1.5, 1.3),
+        tiltedRamp(2.5, 0.95),
+        tiltedRamp(3.0, 0),
+        tiltedRamp(3.0, -0.75),
+        tiltedRamp(0.3, -1.5),
       ];
+      var colorWeightsThomas = [
+        tiltedRamp(1.5, 1.5),
+        tiltedRamp(2.5, 0.75),
+        tiltedRamp(3.0, 0),
+        tiltedRamp(3.0, -0.75),
+        tiltedRamp(0.3, -1.5),
+      ];
+      var colorWeights = colorWeightsMark;
       var numColors = gridColors.length;
       var breedte = 18+12+24+2;
 
@@ -101,7 +109,7 @@
           }
         }
         console.info(errors)
-        if (errors < 50){
+        if (errors < 35){
           break;
         }
       }
